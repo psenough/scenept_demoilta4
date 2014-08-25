@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ 	<title>ScenePT Demoilta#4 - 6 September 2014</title>
+ 	<style>
+ 	@font-face {
+		font-family: 'Neuropol';
+		src: url('NEUROPOL.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
+	
+	body {
+		background: url('1468-seamless-floral-background.jpg');
+		overflow: hidden;
+	}
+ 	.aligncenter {
+ 		position: absolute;
+ 		top: 50px;
+ 		width: 100%;
+ 		text-align: center;
+ 		margin: auto;
+ 	}
+ 	.aligncenter canvas {
+ 		box-shadow:inset 0px 0px 85px rgba(0,0,0,.5);
+		-webkit-box-shadow:inset 0px 0px 85px rgba(0,0,0,.5);
+		-moz-box-shadow:inset 0px 0px 85px rgba(0,0,0,.5);
+		/*background-color: #fff;*/
+	}
+	#text {
+		position: absolute;
+		top: 0px;
+		font-family: 'Neuropol';
+		color: #fff;
+		width: 100%;
+		height: 480px;
+		margin: auto;
+		text-align: center;
+		font-size: 30px;
+		overflow-y: hidden;
+		text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+	}
+ 	</style>
+	<script src="requestanimationframe.js"></script>
+  	<script type="application/javascript">
+
+rand = function(n){
+	return Math.floor(Math.random()*n);
+};
+
+
+function init() {
+	var audio = document.getElementById('input');
+	audio.play();
+	
+	document.getElementById('hideme').style.display = 'none';
+
+	drawCanvas();
+	
+	//document.getElementById('text').scrollTop = 100;
+	//a = element.scrollTop  ;
+	//b  =  element.scrollHeight - element.clientHeight  ;
+}
+
+function drawCanvas() {
+
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	var w = ctx.width = 640;
+	var h = ctx.height = 480;
+	
+	ctx.shadowOffsetX = 5;
+	ctx.shadowOffsetY = 5;
+	ctx.shadowColor = 'rgba(0,0,0,0.2)';
+	
+	
+	var num = 200;
+	var angle = (Math.PI*2)/num;
+	var size = 90;
+	var opening, phase1, phase2;
+
+	function drawThis() {
+		var d = new Date();
+		var timer = d.getTime();
+		
+		color = "rgba(20,120,200,0.05)";
+		ctx.fillStyle = color;
+		
+		phase1 = timer/10000;
+		phase2 = timer/1000;
+		
+		var posX = w*(0.5+Math.sin(phase2*0.1)*0.3);
+		var posY = h*(0.5-Math.cos(phase2*0.2)*0.3);
+		
+		for (var i=0; i<num; i++) {
+			
+				opening = 120+Math.sin(i*angle)*50;
+				
+				//size = 40+Math.sin(timer/1000)*10+Math.sin(timer*(j-numy*.5)/1000)*10;
+				ctx.save();
+				ctx.translate( posX+Math.sin(i*angle+phase1)*opening, posY+Math.cos(i*angle+phase1)*opening );
+				ctx.rotate(i*angle+Math.sin(phase2+Math.sin(i*angle)));
+				ctx.beginPath();
+				ctx.moveTo(-size*.5,-size*.5);
+				ctx.lineTo(0,size);
+				ctx.lineTo(size*.5,-size*.5);
+				//ctx.lineTo(size*.5,size/2*Math.sqrt(3));
+				ctx.fill();
+				ctx.closePath();
+
+				ctx.restore();
+		}
+		
+	}
+	
+	requestAnimationFrame( animate );
+	
+	var d = new Date();
+	var n = d.getTime();
+	var scrollvalue = 0;
+
+	function animate() {
+		requestAnimationFrame( animate );
+		ctx.clearRect(0,0,w,h);
+		//ctx.fillColor = "rgba(0, 255, 255, 1.0)";
+		//ctx.fillRect(0,0,w,h);
+		drawThis();
+		//setTimeout(loop,20);
+		
+		
+		var dom = document.getElementById('text');
+		if (dom) {
+			var d2 = new Date();
+			var n2 = d2.getTime(); 
+
+			var delta = n2 - n;
+			n = n2;
+		
+			scrollvalue += delta*0.02;
+		
+			if (scrollvalue > dom.scrollHeight - dom.clientHeight) scrollvalue = 0;
+		
+			//console.log(n2 + ' ' + n + ' ' + delta + ' ' + scrollvalue);
+		
+			dom.scrollTop = scrollvalue;
+		}
+	}
+}
+
+document.onmousemove = function (e) {mousePos(e);};
+
+var mouseX = 0;
+var mouseY = 0;
+
+function mousePos(e) {
+
+	var dom = document.getElementById("canvas");
+	var leftPad = dom.offsetLeft + dom.offsetParent.offsetLeft;
+	var topPad = dom.offsetTop + dom.offsetParent.offsetTop;
+
+	mouseX = e.pageX - leftPad; 
+	mouseY = e.pageY - topPad;
+	
+	return true;
+}
+  </script>
+ </head>
+ <body onload="init()">
+ 	<div id="hideme">
+ 		<audio id="input" src="07_herr_doktor_-_walk.ogg" onloadedmetadata="loadedMetaData(event);"></audio><br />
+ 	</div>
+ 	<div class="aligncenter">
+   		<canvas id="canvas" width="640" height="480"></canvas>
+   		<div id="text">
+   			<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+			yo ScenePT<br>
+			<br><br>
+			you know what's coming,<br>
+   			same business as usual:<br>
+   			you are summoned<br>
+   			to attend ScenePT Demoilta#4<br>
+   			on the 6th of September 2014<br>
+   			at around 14:30<br>
+   			in Monte da Caparica<br>
+   			<br><br>
+   			in good tradition of The Party 97<br>
+   			at demoilta#3<br>
+   			batteries were not included<br>
+   			which forced us to relocate<br>
+   			to a local bar with wi-fi<br>
+   			<br><br>
+   			but now we're back at Artica HQ<br>
+   			<br><br>
+   			and as usual we will have:<br>
+   			projector<br>
+   			sound system<br>
+   			internet<br>
+   			fridge *new*<br>
+   			and more<br>
+   			<br><br>
+   			entrance fee is<br>
+   			one superbock<br>
+   			<br><br>
+   			partyplace located at:<br>
+   			Artica's headquarters<br>
+   			Madan Park / FCT<br>
+   			Edificio 6<br>
+   			Monte da Caparica<br>
+   			<br><br>
+   			Credits:<br>
+   			code & text - ps / TPOLM<br>
+   			music - Herr Doktor<br>
+   			<br><br>
+   			Greetings to:<br>
+   			ScenePT AllStars<br>
+   			Nothing<br>   			
+   			GlenZ<br>
+   			TPOLM<br>
+   			Napalm Core<br>
+   			Volumetric Illusions<br>
+   			Airbag<br>
+   			Radioactive Design<br>
+   			alien)(dream<br>
+   			Spontz<br>
+   			Madwizards<br>
+   			Satori<br>
+   			Rift<br>
+   			MFX<br>
+   			Kewlers<br>
+   			flo<br>
+   			Traction<br>
+   			Accession<br>
+   			Cocoon<br>
+   			Inque<br>
+   			xplsv<br>
+   			ate bit<br>
+   			Conspiracy<br>
+   			Andromeda Software Development<br>
+   			Farbrausch<br>
+   			Kosmoplovci<br>
+   			TPOLM<br>
+   			Enough Records<br>
+   			<br>
+   			and you...
+   			<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+   		</div>
+   	</div>
+ </body>
+</html>
